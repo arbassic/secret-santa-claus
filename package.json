@@ -4,7 +4,8 @@
   "description": "Secret Santa Claus (Tajemniczy św. Mikołaj) webapp",
   "main": "index.js",
   "scripts": {
-    "test": "npm test"
+    "test": "npm test",
+    "express": "express"
   },
   "repository": {
     "type": "git",

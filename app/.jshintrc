@@ -1,0 +1,8 @@
+{
+  "esversion": 6,
+  "expr": true,
+  "undef": true,
+  "unused": false,
+  "node": true,
+  "predef": [ "-Promise" ]
+}
