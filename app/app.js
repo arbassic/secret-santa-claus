@@ -38,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+//todo: app.use('/favicon.ico', usersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
