@@ -1,12 +1,12 @@
 import { Event } from './event';
 
 export class User {
-  id: number;
-  username: string;
-  password: string;
-  createdDate: string;
-  token: string;
-  type: string;
+  id: String;
+  username: String;
+  password: String;
+  createdDate: String;
+  token: String;
+  type: String;
   events: Event[];
 
   get registered() { return this.type === 'registered'; };

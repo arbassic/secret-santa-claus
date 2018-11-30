@@ -19,15 +19,15 @@ export class EventsService {
     return this.http.put(`${environment.apiEndpoint}/events/${event.id}`, event);
   }
 
-  addUserToEvent(id: Number, userId: Number) {
+  addUserToEvent(id: String, userId: String) {
     return this.http.put(`${environment.apiEndpoint}/events/${id}`, { userId });
   }
   
-  delete(id: number) {
+  delete(id: String) {
     return this.http.delete(`${environment.apiEndpoint}/events/${id}`);
   }
 
-  getById(id: number) {
+  getById(id: String) {
     return this.http.get(`${environment.apiEndpoint}/events/${id}`);
   }
 

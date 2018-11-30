@@ -101,9 +101,57 @@ function getById(req, res, next) {
 }
 
 
+function getUserMemberById(req, res, next) {
+
+  userService.getUserMemberById(req.params.id)
+    .then((user) => {
+
+      if (user) {
+
+        res.json(user);
+
+      } else {
+        
+        res.sendStatus(NOT_FOUND);
+
+      }
+      
+    })
+    .catch(err => next(err));
+
+}
+
+
 function update(req, res, next) {
 
   const promise = userService.update(req.params.id, req.body);
+  
+  promise.then(() => res.json({}))
+    .catch(err => next(err));
+  
+}
+
+function addGift(req, res, next) {
+
+  const promise = userService.addGift(req.params.memberId, req.body);
+  
+  promise.then(() => res.json({}))
+    .catch(err => next(err));
+  
+}
+
+function updateGift(req, res, next) {
+
+  const promise = userService.updateGift(req.params.id, req.body);
+  
+  promise.then(() => res.json({}))
+    .catch(err => next(err));
+  
+}
+
+function updateLetter(req, res, next) {
+
+  const promise = userService.updateLetter(req.params.id, req.body);
   
   promise.then(() => res.json({}))
     .catch(err => next(err));
@@ -128,6 +176,10 @@ router.post('/unregistered', unregistered);
 router.get('/', getAll);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
+router.get('/member/:id', getUserMemberById);
+router.post('/member/gift/:memberId', addGift);
+router.put('/member/gift/:id', updateGift);
+router.put('/member/letter/:id', updateLetter);
 router.put('/:id', update);
 router.delete('/:id', deleteUser);
 

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const UserMember = require('./user-member.model');
+const Gift = require('./gift.model');
 
 
 const SALT_LENGTH = 10;
@@ -46,6 +47,7 @@ function getById(id) {
 
 }
 
+
 async function create(userParam) {
 
   // validate
@@ -69,17 +71,6 @@ async function create(userParam) {
   
 }
 
-
-async function createUnregistered(userParam) {
-
-  const user = new UserMember(userParam);
-
-  // save user
-  const result = await user.save();
-  
-  return result;
-
-}
 
 async function update(id, userParam) {
 
@@ -113,6 +104,7 @@ async function update(id, userParam) {
 
 }
 
+
 async function deleteUser(id) {
 
   await User.findByIdAndRemove(id);
@@ -131,13 +123,85 @@ async function addEventForUser(userId, eventId) {
 }
 
 
+// User Members & Gifts
+
+
+function getUserMemberById(id) {
+
+  return UserMember.findById(id).populate('event', '-members');
+
+}
+
+async function createUnregistered(userParam) {
+
+  const user = new UserMember(userParam);
+
+  // save user
+  const result = await user.save();
+  
+  return result;
+
+}
+
+async function addGift(memberId, giftParam) {
+
+  const gift = new Gift(giftParam);
+
+  // await gift.pre('save', function (next) {
+  //   if ('invalid' == this.name) {
+  //     throw new Error('Gift is incorrect');
+  //   }
+  // });
+  
+  const result = await User.findOneAndUpdate(
+    { _id: memberId },
+    { $push: { gifts: gift } }
+  );
+
+  return result;
+  
+}
+
+
+async function updateGift(id, giftParam) {
+
+  const gift = await Gift.findById(id);
+
+  // validate
+  if (!gift) {
+    
+    throw new Error('Gift not found');
+
+  }
+
+  // copy giftParam properties to gift
+  Object.assign(gift, giftParam);
+
+  await gift.save();
+
+}
+
+async function updateLetter(id, letter) {
+
+  const result = await UserMember.findByIdAndUpdate(id, {
+    $set: { letter: letter.letter }
+  });
+  
+  await result;
+
+}
+
 module.exports = {
   addEventForUser,
+  addGift,
   authenticate,
   create,
   createUnregistered,
   delete: deleteUser,
   getAll,
   getById,
-  update
+  getUserMemberById,
+  update,
+  updateGift,
+  updateLetter
 };

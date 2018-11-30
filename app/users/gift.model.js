@@ -5,18 +5,12 @@ const schema = new mongoose.Schema({
     default: Date.now,
     type: Date
   },
-  event: {
-    ref: 'Event',
-    required: true,
-    type: mongoose.Schema.Types.ObjectId
-  },
-  letter: {
+  description: {
     default: '',
-    required: false,
     type: String
   },
-  username: {
-    required: false,
+  name: {
+    required: true,
     type: String
   }
 });
@@ -29,4 +23,4 @@ schema.virtual('id').get(function virtualizeId () {
   
 });
 
-module.exports = mongoose.model('UserMember', schema);
+module.exports = mongoose.model('Gift', schema);

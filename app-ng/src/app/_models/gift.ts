@@ -1,5 +1,5 @@
 export class Gift {
-  id: Number;
+  id: String;
   name: String;
   description: String;
 }

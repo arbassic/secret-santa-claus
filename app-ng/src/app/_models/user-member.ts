@@ -1,7 +1,10 @@
 import { Gift } from './gift';
+import { Event } from './event';
 
 export class UserMember {
-  id: Number;
+  id: String;
   username: String;
+  letter: String;
   gifts: Gift[];
+  event: Event;
 }

@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     // deprecated:
-    deleteUser(id: number) {
+    deleteUser(id: String) {
         this.userService.delete(id).pipe(first()).subscribe(() => {
             this.loadAllUsers()
         });

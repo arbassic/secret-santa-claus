@@ -24,14 +24,14 @@
 <div *ngIf="listMode">
   <h2>Your events:</h2>
   <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Name</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody>
       <tr *ngFor="let event of currentUser.events; let i = index">
         <th scope="row">{{ i+1 }}</th>
         <td>{{ event.name }}</td>

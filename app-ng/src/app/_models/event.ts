@@ -2,7 +2,7 @@ import { UserMember } from './user-member';
 
 
 export class Event {
-  id: Number;
+  id: String;
   name: String;
   namePrivate: String;
   createdDate: String;
