@@ -1,31 +1,39 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ClipboardModule } from 'ngx-clipboard';
 
 import { AppComponent } from './app.component';
-import { MembersComponent } from './members/members.component';
 import { LoginComponent } from './login/login.component';
 import { AlertComponent } from './_components';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor, ErrorInterceptor } from './_helpers';
-import { routing } from './app.routing';
+import { AppRoutingModule } from './app.routing';
 import { HomeComponent } from './home';
 import { RegisterComponent } from './register';
+import { EventsComponent } from './events/events.component';
+import { SingleEventComponent } from './event-single/event-single.component';
+import { EventNewMemberComponent } from './event-new-member/event-new-member.component';
+import { MemberComponent } from './member/member.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    routing
+    AppRoutingModule,
+    ClipboardModule
   ],
   declarations: [
     AppComponent,
     AlertComponent,
-    MembersComponent,
     LoginComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    EventsComponent,
+    SingleEventComponent,
+    EventNewMemberComponent,
+    MemberComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

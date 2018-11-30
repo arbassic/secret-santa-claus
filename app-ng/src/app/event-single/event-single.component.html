@@ -1,0 +1,45 @@
+<h5 class="sectionName">Podgląd wydarzenia</h5>
+<div *ngIf="event">
+  <h1>{{ event.name | titlecase }}</h1>
+  <span class="cash">Szukamy prezentów w granicach <span class="amount">{{ event.cashAmount }} {{ event.cashCurrency }}</span></span>
+  
+  <hr/>
+
+
+
+  <h3>W losowaniu biorą udział:</h3>
+  <div *ngIf="event.members && event.members.length > 0" class="members">
+      
+    
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Gifts</th>
+          <th scope="col">Ready?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let member of event.members; let i = index">
+          <th scope="row">{{ i+1 }}</th>
+          <td>
+            <a routerLink="/member/{{ member.id }}">{{ member.username }}</a>
+            <a ngxClipboard [cbContent]="baseURL + '/member/' + member.id  + '?n=' + member.username" class="btn copyBtn" (cbOnSuccess) = "onMemberUrlCopied($event, member.username)">Copy URL</a>
+          </td>
+          <td>{{ member.gifts ? member.gifts.length : '0' }}</td>
+          <td>🔵</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!event.members || !event.members.length" class="alert">
+    <p>Lista jest pusta</p>
+  </div>
+
+  <div class="form-group">
+    <a routerLink="/events/{{ event.id }}/new-member" class="btn btn-primary">Dodaj uczestnika</a>
+    <a routerLink="/events/{{ event.id }}/pair-draw" class="btn btn-primary" style="margin-left: 5px">Losuj</a>
+  </div>
+</div>

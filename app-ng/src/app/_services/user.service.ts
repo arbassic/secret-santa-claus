@@ -1,6 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from '@/model/user';
+import { User } from '@/_models/user';
 import { environment } from 'environments/environment';
 
 
@@ -12,7 +12,7 @@ export class UserService {
         return this.http.get<User[]>(`${environment.apiEndpoint}/users`);
     }
 
-    getById(id: number) {
+    getById(id: Number) {
         return this.http.get(`${environment.apiEndpoint}/users/${id}`);
     }
 
@@ -20,11 +20,15 @@ export class UserService {
         return this.http.post(`${environment.apiEndpoint}/users/register`, user);
     }
 
+    addUnregistered(user: User, eventId: Number) {
+        return this.http.post(`${environment.apiEndpoint}/users/unregistered`, { eventId, user });
+    }
+
     update(user: User) {
         return this.http.put(`${environment.apiEndpoint}/users/${user.id}`, user);
     }
 
-    delete(id: number) {
+    delete(id: Number) {
         return this.http.delete(`${environment.apiEndpoint}/users/${id}`);
     }
 }

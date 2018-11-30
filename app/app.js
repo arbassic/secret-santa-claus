@@ -1,3 +1,4 @@
+require('rootpath')();
 require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
@@ -5,55 +6,73 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-// setup mongo
-const mongo = require('mongodb');
-const monk = require('monk');
+// Setup mongo
+const cors = require('cors');
+const jwt = require('middlewares/jwt');
+const errorHandler = require('middlewares/error-handler');
+const mongoose = require('mongoose');
 
-const db = monk(process.env.DB_AUTH_URL);
-db.then(() => { console.log('[app.js] db connected'); });
+// Fix 'deprecation' warnings 
+mongoose.set('useCreateIndex', true);
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('debug', true);
 
-const dbDebug = require('monk-middleware-debug');
-db.addMiddleware(dbDebug);
+const mongoPromise =
+  mongoose.connect(process.env.DB_AUTH_URL);
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+mongoPromise.then(() => {
+  
+  console.log('[app.js] db connected');
+
+}).catch((err) => {
+  
+  console.error('[app.js] db: Something went wrong', err);
+
+});
+
+
+mongoose.Promise = global.Promise;
+
 
 const app = express();
 
-// view engine setup
+// View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(logger('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(cors());
+
+// Use JWT auth to secure the api
+app.use(jwt());
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// add middleware: provide db
+// Add middleware: provide db
 app.use((req, res, next) => {
-  req.db = db;
+  
+  req.db = mongoose;
   next();
+  
 });
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-//todo: app.use('/favicon.ico', usersRouter);
+// app.use('/users', usersRouter);
+app.use('/users', require('./users/users.controller'));
+app.use('/events', require('./events/events.controller'));
 
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
+// Todo: app.use('/favicon.ico', usersRouter);
 
-// error handler
-app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+app.use(errorHandler);
 
 module.exports = app;
