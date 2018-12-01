@@ -135,23 +135,27 @@ function addGift(req, res, next) {
 
   const promise = userService.addGift(req.params.memberId, req.body);
   
-  promise.then(() => res.json({}))
+  promise.then(gift => res.json(gift))
     .catch(err => next(err));
   
 }
 
 function updateGift(req, res, next) {
 
-  const promise = userService.updateGift(req.params.id, req.body);
+  const promise = userService.updateGift(req.params.id, req.body.id, req.body);
   
-  promise.then(() => res.json({}))
+  promise.then(result => res.json(result))
     .catch(err => next(err));
   
 }
 
 function updateLetter(req, res, next) {
 
-  const promise = userService.updateLetter(req.params.id, req.body);
+  const promise = userService.updateLetter(
+    req.params.id,
+    req.body.id,
+    req.body
+  );
   
   promise.then(() => res.json({}))
     .catch(err => next(err));

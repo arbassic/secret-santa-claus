@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const UserMember = require('./user-member.model');
-const Gift = require('./gift.model');
 
 
 const SALT_LENGTH = 10;
@@ -144,18 +143,11 @@ async function createUnregistered(userParam) {
 }
 
 async function addGift(memberId, giftParam) {
-
-  const gift = new Gift(giftParam);
-
-  // await gift.pre('save', function (next) {
-  //   if ('invalid' == this.name) {
-  //     throw new Error('Gift is incorrect');
-  //   }
-  // });
   
-  const result = await User.findOneAndUpdate(
+  const result = await UserMember.findOneAndUpdate(
     { _id: memberId },
-    { $push: { gifts: gift } }
+    { $push: { gifts: giftParam } },
+    { new: true }
   );
 
   return result;
@@ -163,30 +155,36 @@ async function addGift(memberId, giftParam) {
 }
 
 
-async function updateGift(id, giftParam) {
+async function updateGift(userId, giftId, giftParam) {
 
-  const gift = await Gift.findById(id);
+  const result = await UserMember.updateOne(
+    {
+      _id: userId, 
+      'gifts._id': giftId 
+    },
+    {
+      $set: {
+        'gifts.$.description': giftParam.description,
+        'gifts.$.name': giftParam.name
+      }
+    }, (err, raw) => {
 
-  // validate
-  if (!gift) {
-    
-    throw new Error('Gift not found');
+      console.error(err);
 
-  }
+    }
+  );
 
-  // copy giftParam properties to gift
-  Object.assign(gift, giftParam);
-
-  await gift.save();
+  return { ok: result.ok };
 
 }
+
 
 async function updateLetter(id, letter) {
 
   const result = await UserMember.findByIdAndUpdate(id, {
     $set: { letter: letter.letter }
   });
-  
+
   await result;
 
 }

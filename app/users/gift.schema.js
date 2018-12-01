@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const schema = new mongoose.Schema({
+const GiftSubSchema = new mongoose.Schema({
   createdDate: {
     default: Date.now,
     type: Date
@@ -15,12 +15,12 @@ const schema = new mongoose.Schema({
   }
 });
 
-schema.set('toJSON', { virtuals: true });
-schema.set('toObject', { virtuals: true });
-schema.virtual('id').get(function virtualizeId () {
+GiftSubSchema.set('toJSON', { virtuals: true });
+GiftSubSchema.set('toObject', { virtuals: true });
+GiftSubSchema.virtual('id').get(function virtualizeId () {
  
   return this._id;
   
 });
 
-module.exports = mongoose.model('Gift', schema);
+module.exports = GiftSubSchema;

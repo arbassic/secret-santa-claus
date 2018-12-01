@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { UserMember } from '@/_models/user-member';
 import { first } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Gift } from '@/_models/gift';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-member',
@@ -14,6 +16,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class MemberComponent implements OnInit {
 
   @ViewChild('letter') letterHtmlElement: ElementRef;
+  @ViewChild('giftName') giftHtmlElement: ElementRef;
   
   userMember: UserMember;
   letterForm: FormGroup;
@@ -21,6 +24,7 @@ export class MemberComponent implements OnInit {
 
   showLetterEdit = false;
   showGiftEdit = false;
+  giftEdited: Gift;
   
   loading = false;
   submitted = false;
@@ -54,7 +58,8 @@ export class MemberComponent implements OnInit {
 
 
     this.giftForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]]
+      name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(250)]]
     });
   }
 
@@ -92,7 +97,7 @@ export class MemberComponent implements OnInit {
           console.log('User member letter update complete.Data', data);
           this.loading = false;
           const giftsNumber = this.userMember.gifts ? this.userMember.gifts.length : 0;
-          this.alertService.success('List zapisano pomyślnie! Hm... na pewno są w nim wszystkie uczynki? :P' + (giftsNumber > 0 ? '' : ' Teraz czas na Twoje pomysły na prezenty!'), true);
+          this.alertService.success('List zapisano pomyślnie! Hm... na pewno są w nim wszystkie uczynki? :P' + (giftsNumber > 0 ? '' : ' Teraz czas na Twoje pomysły na prezenty!'));
           this.showLetterEdit = false;
           this.submitted = false;
         },
@@ -105,18 +110,24 @@ export class MemberComponent implements OnInit {
   onCancel() {
     this.showLetterEdit = false;
     this.showGiftEdit = false;
+    this.giftEdited = null;
     this.submitted = false;
     this.loading = false;
     this.letterForm.controls.letter.setValue(this.userMember.letter);
+    this.giftForm.controls.name.setValue('');
+    this.giftForm.controls.description.setValue('');
   }
 
-  // ------------------------
+
+
+  // --------- GIFT ---------------
   onSubmitGift() {
 
     if (this.showLetterEdit) this.showLetterEdit = false;
 
     if(!this.showGiftEdit) {
       this.showGiftEdit = true;
+      setTimeout(() => this.giftHtmlElement.nativeElement.focus(), 200);
       return;
     }
     
@@ -131,5 +142,64 @@ export class MemberComponent implements OnInit {
     }
 
     this.loading = true;
+
+    let observable: Observable<Object>;
+
+    if (this.giftEdited) {
+      this.giftEdited.description = this.giftForm.controls.description.value;
+      this.giftEdited.name = this.giftForm.controls.name.value;
+      observable = this.userService.updateGiftForMember(this.userMember.id, this.giftEdited);
+    } else {
+      observable = this.userService.addGiftToMember(this.userMember.id, this.giftForm.value);
+    }
+
+    observable
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log(`Gift ${this.giftEdited ? 'edit complete' : 'added'}. Data`);
+          this.loading = false;
+          this.alertService.success(this.giftEdited ? 'Prezent zapisany' : 'Prezent dodany!', true);
+
+          if (this.giftEdited) {
+            // it was the gift edit call - just cancel
+            this.onCancel();
+            return; 
+          }
+
+          if (!this.userMember.gifts) this.userMember.gifts = new Array<Gift>();
+          
+          if (data && data['gifts'] && data['gifts'].length > this.userMember.gifts.length) {
+            let newGiftId;
+            newGiftId = data['gifts'].pop().id;
+
+            const gift: Gift = Object.assign(new Gift(), this.giftForm.value);
+            gift.id = newGiftId;
+  
+            this.userMember.gifts.push(gift);
+            
+            this.onCancel();
+          } else {
+            // reload
+            // can't parse data - perform the regular page reload to refresh data
+            window.location.reload();
+          }
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        });
+  }
+
+  editGift(giftIndex) {
+    if (this.showLetterEdit) this.showLetterEdit = false;
+    
+    this.giftEdited = this.userMember.gifts[giftIndex];
+
+    this.fg.description.setValue(this.giftEdited.description);
+    this.fg.name.setValue(this.giftEdited.name);
+
+    this.showGiftEdit = true;
+    setTimeout(() => this.giftHtmlElement.nativeElement.focus(), 200);
   }
 }

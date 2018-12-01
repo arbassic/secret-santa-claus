@@ -1,15 +1,23 @@
 <div *ngIf="userMember">
   <h5 class="sectionName">Witaj, {{ userMember.username }}</h5>
-  <h2>{{ userMember.event.name }}</h2>
   
   <hr/>
-
-  <h4>List do św. Mikołaja</h4>
-  <p *ngIf="!showLetterEdit && userMember.letter" class="letter">{{ userMember.letter }}</p>
-  <p *ngIf="!userMember.letter && !showLetterEdit">Najpierw napisz list do św. Mikołaja. Opisz swoje wszystkie dobre i złe uczynki (nie wolno kłamać). Następnie uzupełnij liste prezentów (na dole)</p>
   
-  <form [formGroup]="letterForm" (ngSubmit)="onSubmitLetter()">
-    <div *ngIf="showLetterEdit" class="form-group">
+  <h2>{{ userMember.event.name }}</h2>
+  
+
+
+
+
+  <!-- ########## THE LETTER TO St. CLAUS ########### -->
+  <div *ngIf="!showGiftEdit">
+    <hr/>
+    <h4>List do św. Mikołaja</h4>
+    <p *ngIf="!showLetterEdit && userMember.letter" class="letter">{{ userMember.letter }}</p>
+    <p *ngIf="!userMember.letter && !showLetterEdit">Najpierw napisz list do św. Mikołaja. Opisz swoje wszystkie dobre i złe uczynki (nie wolno kłamać). Następnie uzupełnij liste prezentów (na dole)</p>
+    
+    <form [formGroup]="letterForm" (ngSubmit)="onSubmitLetter()">
+      <div *ngIf="showLetterEdit" class="form-group">
         <textarea 
           formControlName="letter" 
           class="form-control" 
@@ -20,45 +28,70 @@
             <div *ngIf="fl['letter'].errors.minlength || fl['letter'].errors.required">List za krótki. Św. Mikołaj lubi długie listy</div>
             <div *ngIf="fl['letter'].errors.maxlength">List zbyt długi... Św. Mikołaj lubi długi listy, ale musi zająć się tysiącami takich dzieci jak Ty...</div>
         </div>
-    </div>
-    <div class="form-group">
+      </div>
+      <div class="form-group">
         <button [disabled]="loading" class="btn btn-primary">{{ showLetterEdit ? 'Zapisz' : (userMember.letter ? 'Edytuj list' : 'Napisz list') }}</button>
         <img *ngIf="loading" class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         <a *ngIf="showLetterEdit" (click)="onCancel()" class="btn btn-link">Anuluj</a>
-    </div>
-  </form>
+      </div>
+    </form>
 
+  </div>
+
+
+
+  <!-- ########## GIFTs ########### -->
+<div *ngIf="!showLetterEdit">
   <hr/>
 
-  <h4>Lista prezentów</h4>
-  <div *ngIf="!userMember.gifts || !userMember.gifts.length" class="gifts">
-    Lista jest pusta
-  </div>
-
-  <div *ngIf="userMember.gifts && userMember.gifts.length > 0" class="gifts">
-    <div *ngFor="let gift of userMember.gifts; let i = index">
-      {{ gift | json }}
+    <h4 *ngIf="!showGiftEdit">Lista prezentów</h4>
+    <div *ngIf="(!userMember.gifts || !userMember.gifts.length) &&  !showGiftEdit" class="gifts">
+      Lista jest pusta
     </div>
-  </div>
 
-  <form [formGroup]="giftForm" (ngSubmit)="onSubmitGift()">
-    <div *ngIf="showGiftEdit" class="form-group">
-        <textarea 
-          formControlName="name" 
-          class="form-control" 
-          [ngClass]="{ 'is-invalid': submitted && fg['name'].errors }" 
-          #letter>
-          </textarea>
-        <div *ngIf="submitted && fg['name'].errors" class="invalid-feedback">
-            <div *ngIf="fg['name'].errors.minlength || fg['name'].errors.required">Zbyt krótka nazwa...</div>
-            <div *ngIf="fg['name'].errors.maxlength">Nazwa zbyt długa...</div>
+    <div *ngIf="userMember.gifts && userMember.gifts.length > 0 && !showGiftEdit" class="gifts">
+      <div *ngFor="let gift of userMember.gifts; let i = index" class="gift">
+        <p><span>{{ gift.name }}</span> <a (click)="editGift(i)" class="btn copyBtn">Edytuj</a></p>
+        <p class="label">Opis:</p>
+        <p class="description" style="margin-bottom: 2rem;white-space:pre-wrap;">{{ gift.description }}</p>
+      </div>
+    </div>
+
+    <form [formGroup]="giftForm" (ngSubmit)="onSubmitGift()">
+      <div *ngIf="showGiftEdit">
+        <h4>Nowy prezent</h4>
+        <div class="form-group">
+          <label for="name">Nazwa:</label>
+          <input formControlName="name" 
+            class="form-control" 
+            [ngClass]="{ 'is-invalid': submitted && fg['name'].errors }" 
+            #giftName />
+          <div *ngIf="submitted && fg['name'].errors" class="invalid-feedback">
+              <div *ngIf="fg['name'].errors.minlength || fg['name'].errors.required">Nazwa zbyt krótka...</div>
+              <div *ngIf="fg['name'].errors.maxlength">Nazwa zbyt długa...</div>
+          </div>
         </div>
-    </div>
-    <div class="form-group">
-        <button [disabled]="loading" class="btn btn-primary">{{ showGiftEdit ? 'Zapisz' : 'Dodaj nowy' }}</button>
+
+        <div class="form-group">
+            <label for="description">Opis:</label>
+            <textarea 
+              formControlName="description" 
+              class="form-control" 
+              [ngClass]="{ 'is-invalid': submitted && fg['description'].errors }">
+              </textarea>
+            <div *ngIf="submitted && fg['description'].errors" class="invalid-feedback">
+                <div *ngIf="fg['description'].errors.minlength || fg['description'].errors.required">Opis zbyt krótki...</div>
+                <div *ngIf="fg['description'].errors.maxlength">Opis za długi...</div>
+            </div>
+        </div> 
+      </div>
+      <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">{{ showGiftEdit ? 'Zapisz' : 'Dodaj nowy prezent' }}</button>
         <img *ngIf="loading" class="pl-3" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
         <a *ngIf="showGiftEdit" (click)="onCancel()" class="btn btn-link">Anuluj</a>
-    </div>
-  </form>
+      </div>
+    </form>
+
+  </div>
 
 </div>

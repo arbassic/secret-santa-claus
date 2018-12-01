@@ -2,6 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { User } from '@/_models/user';
 import { environment } from 'environments/environment';
+import { Gift } from '@/_models/gift';
 
 
 @Injectable({ providedIn: 'root' })
@@ -22,6 +23,14 @@ export class UserService {
 
     updateMemberLetter(id: String, letter: String) {
         return this.http.put(`${environment.apiEndpoint}/users/member/letter/${id}`, { letter });
+    }
+
+    addGiftToMember(id: String, gift: Gift) {
+        return this.http.post(`${environment.apiEndpoint}/users/member/gift/${id}`, gift);
+    }
+
+    updateGiftForMember(memberId: String, gift: Gift) {
+        return this.http.put(`${environment.apiEndpoint}/users/member/gift/${memberId}`, gift);
     }
 
     register(user: User) {
