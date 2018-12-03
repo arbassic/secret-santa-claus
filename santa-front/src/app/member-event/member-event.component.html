@@ -1,0 +1,37 @@
+<h5 class="sectionName">Podgląd wydarzenia</h5>
+<div *ngIf="userMember">
+    <h1>{{ userMember.event.name | titlecase }}</h1>
+    <span class="cash">Szukamy prezentów w granicach <span class="amount">{{ userMember.event.cashAmount }} {{ userMember.event.cashCurrency }}</span></span>
+    
+    <hr/>
+  
+  
+  
+    <h3>W losowaniu biorą udział:</h3>
+    <div *ngIf="userMember.event.members && userMember.event.members.length > 0" class="members">
+        
+      
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Imię</th>
+            <th scope="col">Prezenty</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of userMember.event.members; let i = index">
+            <th scope="row">{{ i+1 }}</th>
+            <td>
+              <a routerLink="/member/{{ member.id }}">{{ member.username }}{{ member.id == parentMemberId ? ' (Ty)' : '' }}</a>
+            </td>
+            <td>{{ member.gifts ? member.gifts.length : '0' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  
+    <div *ngIf="!userMember.event.members || !userMember.event.members.length" class="alert">
+      <p>Lista jest pusta</p>
+    </div>
+</div>

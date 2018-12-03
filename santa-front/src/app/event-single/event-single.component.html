@@ -24,8 +24,8 @@
         <tr *ngFor="let member of event.members; let i = index">
           <th scope="row">{{ i+1 }}</th>
           <td>
-            <a routerLink="/member/{{ member.id }}">{{ member.username }}</a>
-            <a ngxClipboard [cbContent]="baseURL + '/member/' + member.id  + '?n=' + member.username" class="btn copyBtn" (cbOnSuccess) = "onMemberUrlCopied($event, member.username)">Copy URL</a>
+            <a routerLink="/member/{{ member.path }}">{{ member.username }}</a>
+            <a ngxClipboard [cbContent]="baseURL + '/member/' + member.path + '?n=' + member.username" class="btn copyBtn" (cbOnSuccess) = "onMemberUrlCopied($event, member.username)">Copy URL</a>
           </td>
           <td>{{ member.gifts ? member.gifts.length : '0' }}</td>
           <td>🔵</td>

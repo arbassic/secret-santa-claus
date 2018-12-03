@@ -19,6 +19,10 @@ const UserMember = new mongoose.Schema({
     required: false,
     type: String
   },
+  token: {
+    required: true,
+    type: String
+  },
   username: {
     required: false,
     type: String

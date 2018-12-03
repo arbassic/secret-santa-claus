@@ -21,6 +21,10 @@ export class UserService {
         return this.http.get(`${environment.apiEndpoint}/users/member/${id}`);
     }
 
+    authMemberById(id: String, token: String) {
+        return this.http.get(`${environment.apiEndpoint}/users/member/${id}/${token}`);
+    }
+
     updateMemberLetter(id: String, letter: String) {
         return this.http.put(`${environment.apiEndpoint}/users/member/letter/${id}`, { letter });
     }

@@ -7,6 +7,7 @@ import { ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { Event } from '@/_models/event';
 import { Location } from '@angular/common';
+import { UserMember } from '@/_models/user-member';
 
 @Component({
   selector: 'app-event-single',
@@ -28,7 +29,7 @@ export class SingleEventComponent implements OnInit {
     private location: Location
   ) {
     this.currentUserSubscription = this.authenticationService.currentUser.subscribe(user => {
-        this.currentUser = user;
+      this.currentUser = user;
     });
     
     this.baseURL = window.location.href.replace(this.location.path(), '');
@@ -40,6 +41,7 @@ export class SingleEventComponent implements OnInit {
       // get event data for event with id from the URL parameter
       this.eventsService.getById(params['id']).pipe(first()).subscribe(eventData => {
         this.event = Object.assign(new Event(), eventData);
+        this.event.members = this.event.members.map(memberData => Object.assign(new UserMember(), memberData));
       }, error => {
         this.alertService.error("No such event", error)
         });

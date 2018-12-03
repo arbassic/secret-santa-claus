@@ -2,9 +2,10 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('./user.model');
 const UserMember = require('./user-member.model');
-
+const md5Hex = require('md5-hex');
 
 const SALT_LENGTH = 10;
+const TOKEN_LENGTH = 8;
 
 async function authenticate({ username, password }) {
 
@@ -42,7 +43,9 @@ function getAll() {
 
 function getById(id) {
 
-  return User.findById(id).select('-hash');
+  return User.findById(id)
+    .populate('events')
+    .select('-hash');
 
 }
 
@@ -127,13 +130,35 @@ async function addEventForUser(userId, eventId) {
 
 function getUserMemberById(id) {
 
-  return UserMember.findById(id).populate('event', '-members');
+  return UserMember.findById(id)
+    .populate({
+      path: 'event',
+      populate: {
+        path: 'members',
+        select: '-token -event -createdDate \
+-gifts.description -gifts.name -gifts.createdDate'
+      },
+      select: '-_id -createdDate'
+    })
+    .select({ token: 0 });
+
+}
+
+
+function authUserMemberById(id, token) {
+
+  return UserMember.findOne({
+    _id: id,
+    token
+  }).populate('event', '-members');
 
 }
 
 async function createUnregistered(userParam) {
 
   const user = new UserMember(userParam);
+
+  user.token = md5Hex(userParam.username).substr(TOKEN_LENGTH);
 
   // save user
   const result = await user.save();
@@ -192,6 +217,7 @@ async function updateLetter(id, letter) {
 module.exports = {
   addEventForUser,
   addGift,
+  authUserMemberById,
   authenticate,
   create,
   createUnregistered,

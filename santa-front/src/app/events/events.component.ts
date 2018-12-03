@@ -27,10 +27,11 @@ export class EventsComponent implements OnInit {
     private eventsService: EventsService,
     private authenticationService: AuthenticationService,
     private formBuilder: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private router: Router
   ) {
     this.currentUserSubscription = this.authenticationService.currentUser.subscribe(user => {
-        this.currentUser = user;
+      this.currentUser = user;
     });
   }
 
@@ -61,9 +62,10 @@ export class EventsComponent implements OnInit {
       .subscribe(
         data => {
           console.log('New event creation complete. Data', data);
-          // this.loading = false;
+          this.loading = false;
           this.alertService.success('Event created successfully', true);
-          //this.router.navigate(['/login']);
+          this.authenticationService.refreshCurrentUser();
+          this.router.navigate(['/']);
         },
         error => {
           this.alertService.error(error);

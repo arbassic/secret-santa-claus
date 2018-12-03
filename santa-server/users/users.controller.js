@@ -122,6 +122,27 @@ function getUserMemberById(req, res, next) {
 }
 
 
+function authUserMemberById(req, res, next) {
+
+  userService.authUserMemberById(req.params.id, req.params.token)
+    .then((user) => {
+
+      if (user) {
+
+        res.json(user);
+
+      } else {
+        
+        res.sendStatus(NOT_FOUND);
+
+      }
+      
+    })
+    .catch(err => next(err));
+
+}
+
+
 function update(req, res, next) {
 
   const promise = userService.update(req.params.id, req.body);
@@ -153,7 +174,6 @@ function updateLetter(req, res, next) {
 
   const promise = userService.updateLetter(
     req.params.id,
-    req.body.id,
     req.body
   );
   
@@ -181,6 +201,7 @@ router.get('/', getAll);
 router.get('/current', getCurrent);
 router.get('/:id', getById);
 router.get('/member/:id', getUserMemberById);
+router.get('/member/:id/:token', authUserMemberById);
 router.post('/member/gift/:memberId', addGift);
 router.put('/member/gift/:id', updateGift);
 router.put('/member/letter/:id', updateLetter);

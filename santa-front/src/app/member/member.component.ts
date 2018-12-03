@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { EventsService } from '@/_services/events.service';
-import { UserService, AlertService } from '@/_services';
+import { UserService, AlertService, AuthenticationService } from '@/_services';
 import { ActivatedRoute } from '@angular/router';
 import { UserMember } from '@/_models/user-member';
 import { first } from 'rxjs/operators';
@@ -22,6 +22,9 @@ export class MemberComponent implements OnInit {
   letterForm: FormGroup;
   giftForm: FormGroup;
 
+  authorized = false;
+  registered = false;
+  tutorialClosed = false;
   showLetterEdit = false;
   showGiftEdit = false;
   giftEdited: Gift;
@@ -33,20 +36,49 @@ export class MemberComponent implements OnInit {
     private userService: UserService,
     private route: ActivatedRoute,
     private alertService: AlertService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private authenticationService: AuthenticationService
   ) { }
 
   ngOnInit() {
+
+    this.tutorialClosed = localStorage.getItem('tutorialMember') && JSON.parse(localStorage.getItem('tutorialMember'))['tutorialClosed'];
+
     // get member
-    const param = this.route.snapshot.paramMap.get('id');
-    this.userService.getMemberById(param).pipe(first()).subscribe(
+    const memberId: string = this.route.snapshot.paramMap.get('id');
+    let memberToken: string = this.route.snapshot.paramMap.get('token');
+    if (!memberToken &&
+      localStorage.getItem('memberToken') &&
+      memberId == localStorage.getItem('memberId'))
+    {
+      memberToken = localStorage.getItem('memberToken');
+      memberToken = memberToken.length < 6 ? null : memberToken;
+    }
+
+    let membersRequest = memberToken ?
+      this.userService.authMemberById(memberId, memberToken) :
+      this.userService.getMemberById(memberId);
+    
+    membersRequest.pipe(first()).subscribe(
       data => {
+
+        this.authorized = memberToken != null;
+        this.registered = this.authenticationService.currentUserValue && this.authenticationService.currentUserValue.token ? true : false;
+        
+        if (this.authorized) {
+          localStorage.setItem('memberToken', memberToken);
+          localStorage.setItem('memberId', memberId);
+        }
+
         this.userMember = Object.assign(new UserMember(), data);
         this.initForms();
         this.letterForm.controls.letter.setValue(this.userMember.letter ? this.userMember.letter : '');
       }, 
       error => {
-        this.alertService.error(error);
+        if(memberToken)
+          this.alertService.error('Not authorized');
+        else
+          this.alertService.error(error);
       });
   }
 
@@ -59,7 +91,7 @@ export class MemberComponent implements OnInit {
 
     this.giftForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
-      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(250)]]
+      description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1500)]]
     });
   }
 
@@ -97,7 +129,7 @@ export class MemberComponent implements OnInit {
           console.log('User member letter update complete.Data', data);
           this.loading = false;
           const giftsNumber = this.userMember.gifts ? this.userMember.gifts.length : 0;
-          this.alertService.success('List zapisano pomyślnie! Hm... na pewno są w nim wszystkie uczynki? :P' + (giftsNumber > 0 ? '' : ' Teraz czas na Twoje pomysły na prezenty!'));
+          this.alertService.success('List zapisano pomyślnie!' + (giftsNumber > 0 ? '' : ' Teraz czas na Twoje pomysły na prezenty!'));
           this.showLetterEdit = false;
           this.submitted = false;
         },
@@ -201,5 +233,10 @@ export class MemberComponent implements OnInit {
 
     this.showGiftEdit = true;
     setTimeout(() => this.giftHtmlElement.nativeElement.focus(), 200);
+  }
+
+  closeTutorial() {
+    this.tutorialClosed = true;
+    localStorage.setItem('tutorialMember', JSON.stringify({ tutorialClosed: true }));
   }
 }

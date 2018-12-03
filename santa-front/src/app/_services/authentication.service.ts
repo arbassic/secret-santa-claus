@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { User } from '@/_models/user';
 import { environment } from 'environments/environment';
 import { Event } from '@/_models/event';
+import { UserService } from './user.service';
 
 
 @Injectable({ providedIn: 'root' })
@@ -12,7 +13,10 @@ export class AuthenticationService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient,
+    private userService: UserService
+  ) {
     const userStored = localStorage.getItem('currentUser');
     const user: User = userStored ? this.parseUser(JSON.parse(userStored)) : null;
     this.currentUserSubject = new BehaviorSubject<User>(user);
@@ -36,6 +40,24 @@ export class AuthenticationService {
 
         return user;
       }));
+  }
+
+  refreshCurrentUser() {
+    const userStored = localStorage.getItem('currentUser');
+    const user: User = userStored ? this.parseUser(JSON.parse(userStored)) : null;
+
+    if (!user || !user.id) {
+      console.error("No current user");
+      return;
+    }
+
+    // update data
+    this.userService.getById(user.id).subscribe(user => {
+      const currentUser = this.currentUserSubject.value;
+      user['token'] = currentUser.token;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      this.currentUserSubject.next(this.parseUser(user));
+    });
   }
 
   private parseUser(data: Object) {
