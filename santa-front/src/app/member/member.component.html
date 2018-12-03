@@ -88,7 +88,7 @@
     <h4>List do św. Mikołaja</h4>
     <p *ngIf="authorized && !showLetterEdit && userMember.letter" class="letter">{{ userMember.letter }}</p>
     <p *ngIf="!authorized" class="letter">{{ userMember.letter ? (userMember.letter.substr(0, 5) + '...') : '– – –' }}</p>
-    <p *ngIf="authorized && !userMember.letter && !showLetterEdit">Najpierw napisz list do św. Mikołaja. Opisz swoje wszystkie dobre i złe uczynki (nie wolno kłamać). Następnie uzupełnij liste prezentów (na dole)</p>
+    <p *ngIf="authorized && !userMember.letter && !showLetterEdit">Napisz ogólnopoglądowy list do św. Mikołaja. Opisz swoje wszystkie dobre i złe uczynki (nie wolno kłamać).</p>
     
     <form *ngIf="authorized" [formGroup]="letterForm" (ngSubmit)="onSubmitLetter()">
       <div *ngIf="showLetterEdit" class="form-group">
