@@ -1,0 +1,22 @@
+<div *ngIf="pairedMember">
+  <h5 class="sectionName">{{ pairedMember.username }}</h5>
+
+  <h4>List do św. Mikołaja</h4>
+  <p *ngIf="pairedMember.letter" class="alert alert-info letter">{{ pairedMember.letter }}</p>
+  <p *ngIf="!pairedMember.letter" class="alert alert-warning letter">Uczestnik {{ pairedMember.username }} jeszcze nie napisał listu do św. Mikołaja... Zajrzyj tu ponownie później!</p>
+  <hr/>
+
+  <h4>Lista prezentów</h4>
+  <div *ngIf="(!pairedMember.gifts || !pairedMember.gifts.length)" class="alert alert-warning gifts">
+    Lista jest pusta
+  </div>
+  <div *ngIf="pairedMember.gifts && pairedMember.gifts.length > 0" class="alert alert-success gifts">
+    <div *ngFor="let gift of pairedMember.gifts; let i = index" class="gift">
+      <p *ngIf="gift.name && gift.name.length > 2"><span>{{ gift.name }}</span></p>
+      <p *ngIf="!gift.name || gift.name.length <= 2"><span>Prezent #{{ i + 1 }}</span></p>
+      <p class="label">Opis:</p>
+      <p class="description" style="margin-bottom: 2rem;white-space:pre-wrap;" [innerHtml]="gift.description | linkify"></p>
+    </div>
+  </div>
+
+</div>

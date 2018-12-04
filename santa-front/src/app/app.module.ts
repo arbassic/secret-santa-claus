@@ -17,6 +17,8 @@ import { EventNewMemberComponent } from './event-new-member/event-new-member.com
 import { MemberComponent } from './member/member.component';
 import { LinkifyPipe } from './_helpers/linkify.pipe';
 import { MemberEventComponent } from './member-event/member-event.component';
+import { EventDrawComponent } from './event-draw/event-draw.component';
+import { MemberPairedComponent } from './member-paired/member-paired.component';
 
 @NgModule({
   imports: [
@@ -37,7 +39,9 @@ import { MemberEventComponent } from './member-event/member-event.component';
     EventNewMemberComponent,
     MemberComponent,
     LinkifyPipe,
-    MemberEventComponent
+    MemberEventComponent,
+    EventDrawComponent,
+    MemberPairedComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

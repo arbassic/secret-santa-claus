@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start_loc": "ng serve --host 192.168.0.177 --port 3334 -o",
+    "start_77_debug": "ng serve --host 77.55.215.127 --public-host http://cotpm.nazwa.pl --port 4200 --disable-host-check",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
@@ -24,6 +25,7 @@
     "linkifyjs": "^2.1.7",
     "ngx-clipboard": "^11.1.9",
     "rxjs": "~6.3.3",
+    "shuffle-array": "^1.0.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.26"
   },

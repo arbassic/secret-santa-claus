@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { EventsService } from '@/_services/events.service';
 import { UserService, AlertService, AuthenticationService } from '@/_services';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserMember } from '@/_models/user-member';
 import { first } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,6 +19,7 @@ export class MemberComponent implements OnInit {
   @ViewChild('giftName') giftHtmlElement: ElementRef;
   
   userMember: UserMember;
+  pairedMember: UserMember;
   letterForm: FormGroup;
   giftForm: FormGroup;
 
@@ -35,6 +36,7 @@ export class MemberComponent implements OnInit {
   constructor(
     private userService: UserService,
     private route: ActivatedRoute,
+    private router: Router,
     private alertService: AlertService,
     private formBuilder: FormBuilder,
     private authenticationService: AuthenticationService
@@ -69,8 +71,9 @@ export class MemberComponent implements OnInit {
           localStorage.setItem('memberToken', memberToken);
           localStorage.setItem('memberId', memberId);
         }
-
+        
         this.userMember = Object.assign(new UserMember(), data);
+        this.pairedMember = this.userMember.pairedMemberId ? Object.assign(new UserMember(), this.userMember.pairedMemberId) : null;
         this.initForms();
         this.letterForm.controls.letter.setValue(this.userMember.letter ? this.userMember.letter : '');
       }, 
@@ -238,5 +241,12 @@ export class MemberComponent implements OnInit {
   closeTutorial() {
     this.tutorialClosed = true;
     localStorage.setItem('tutorialMember', JSON.stringify({ tutorialClosed: true }));
+  }
+
+  checkPairedMember() {
+    const token = localStorage.getItem('memberToken');
+    const id = localStorage.getItem('memberId');
+
+    this.router.navigate([`member/${id}/${token}/paired`]);
   }
 }

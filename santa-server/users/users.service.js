@@ -150,7 +150,12 @@ function authUserMemberById(id, token) {
   return UserMember.findOne({
     _id: id,
     token
-  }).populate('event', '-members');
+  })
+    .populate('event', '-members')
+    .populate({
+      path: 'pairedMemberId',
+      select: '-token -event -createdDate'
+    });
 
 }
 

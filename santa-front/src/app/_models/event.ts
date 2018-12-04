@@ -2,13 +2,13 @@ import { UserMember } from './user-member';
 
 
 export class Event {
-  id: String;
-  name: String;
-  namePrivate: String;
-  createdDate: String;
+  id: string;
+  name: string;
+  namePrivate: string;
+  createdDate: string;
   open: Boolean;
   cashAmount: Number;
-  cashCurrency: String;
+  cashCurrency: string;
   members: UserMember[];
-  results: [String, String][];
+  results: [string, string][];
 }

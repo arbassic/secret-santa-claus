@@ -77,6 +77,25 @@ function update(req, res, next) {
 }
 
 
+function updateResults(req, res, next) {
+
+  // parse
+  if (!req.body.results || !req.params.id) {
+
+    res.sendStatus(BAD_HTTP_REQUEST);
+    
+    return;
+
+  }
+
+  const promise = eventService.updateResults(req.params.id, req.body.results);
+  
+  promise.then(() => res.json({}))
+    .catch(err => next(err));
+  
+}
+
+
 function deleteEvent(req, res, next) {
 
   const promise = eventService.delete(req.params.id);
@@ -92,6 +111,7 @@ router.post('/create', createNew);
 router.get('/', getAll);
 router.get('/:id', getById);
 router.put('/:id', update);
+router.put('/:id/results', updateResults);
 router.delete('/:id', deleteEvent);
 
 module.exports = router;

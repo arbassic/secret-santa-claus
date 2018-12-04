@@ -8,6 +8,7 @@ export class UserMember {
   gifts: Gift[];
   event: Event;
   token: string;
+  pairedMemberId: UserMember;
   get path() {
     return this.id + (this.token ? '/' + this.token : '');
   }

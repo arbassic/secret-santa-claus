@@ -19,6 +19,11 @@ const UserMember = new mongoose.Schema({
     required: false,
     type: String
   },
+  pairedMemberId: {
+    ref: 'UserMember',
+    required: false,
+    type: mongoose.Schema.Types.ObjectId
+  },
   token: {
     required: true,
     type: String

@@ -3,10 +3,19 @@
   <h5 class="sectionName" *ngIf="!authorized">{{ userMember.username }}</h5>
   
   <hr *ngIf="authorized"/>
+
+  <div *ngIf="pairedMember && pairedMember.username" class="alert alert-info">
+    <h2>Losowanie zakończone!</h2>
+    <p>Został Ci wylosowany uczestnik: <strong>{{ pairedMember.username }}</strong></p>
+    <button (click)="checkPairedMember()" class="btn btn-info btn-sm">Zobacz co {{ pairedMember.username }} ma na liście prezentów</button>
+
+  </div>
   
+  <hr *ngIf="pairedMember && pairedMember.username"/>
+
   <h2 *ngIf="authorized">{{ userMember.event.name }}</h2>
   
-  <div *ngIf="authorized && !tutorialClosed" class="alert alert-success">
+  <div *ngIf="!pairedMember && authorized && !tutorialClosed" class="alert alert-success">
     <p>Witaj, {{ userMember.username }}</p>
     <ol>
       <li>Uzupełnij prezenty. Wpisz przynajmniej 3 pomysły, żeby św. Mikołaj miał w czym wybierać, a dla Ciebie będzie to wciąż niespodzianka! :)

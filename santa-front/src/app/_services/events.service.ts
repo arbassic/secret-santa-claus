@@ -19,17 +19,20 @@ export class EventsService {
     return this.http.put(`${environment.apiEndpoint}/events/${event.id}`, event);
   }
 
-  addUserToEvent(id: String, userId: String) {
+  addUserToEvent(id: string, userId: string) {
     return this.http.put(`${environment.apiEndpoint}/events/${id}`, { userId });
   }
   
-  delete(id: String) {
+  delete(id: string) {
     return this.http.delete(`${environment.apiEndpoint}/events/${id}`);
   }
 
-  getById(id: String) {
+  getById(id: string) {
     return this.http.get(`${environment.apiEndpoint}/events/${id}`);
   }
 
+  saveResults(id: string, results: { memberId: string, drawnMemberId: string, }[]) {
+    return this.http.put(`${environment.apiEndpoint}/events/${id}/results`, { results });
+  }
   
 }
