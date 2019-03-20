@@ -1,10 +1,8 @@
 const express = require('express');
 const router = new express.Router();
 const userService = require('./users.service');
+const httpStatus = require('http-status-codes');
 
-
-const BAD_HTTP_REQUEST = 400;
-const NOT_FOUND = 404;
 
 function authenticate(req, res, next) {
 
@@ -18,7 +16,7 @@ function authenticate(req, res, next) {
 
     } else {
       
-      res.status(BAD_HTTP_REQUEST)
+      res.status(httpStatus.BAD_HTTP_REQUEST)
         .json({ message: 'Username or password is incorrect' });
       
     }
@@ -70,7 +68,7 @@ function getCurrent(req, res, next) {
 
       } else {
         
-        res.sendStatus(NOT_FOUND);
+        res.sendStatus(httpStatus.NOT_FOUND);
 
       }
   
@@ -91,7 +89,7 @@ function getById(req, res, next) {
 
       } else {
         
-        res.sendStatus(NOT_FOUND);
+        res.sendStatus(httpStatus.NOT_FOUND);
 
       }
       
@@ -112,7 +110,7 @@ function getUserMemberById(req, res, next) {
 
       } else {
         
-        res.sendStatus(NOT_FOUND);
+        res.sendStatus(httpStatus.NOT_FOUND);
 
       }
       
@@ -133,7 +131,7 @@ function authUserMemberById(req, res, next) {
 
       } else {
         
-        res.sendStatus(NOT_FOUND);
+        res.sendStatus(httpStatus.NOT_FOUND);
 
       }
       
