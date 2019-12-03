@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiEndpoint: 'http://79.110.195.211:3330/'
+  apiEndpoint: 'http://cotpm.nazwa.pl:3330/'
 };
