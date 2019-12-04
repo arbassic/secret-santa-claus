@@ -1,13 +1,13 @@
-<h5 class="sectionName">Podgląd wydarzenia</h5>
+<h5 class="sectionName">Idą święta! :)</h5>
 <div *ngIf="userMember">
     <h1>{{ userMember.event.name | titlecase }}</h1>
-    <span class="cash">Kupujemy prezenty za kwotę ±<span class="amount">{{ userMember.event.cashAmount }} {{ userMember.event.cashCurrency }}</span></span>
+    <!--<span class="cash">Kupujemy prezenty za kwotę ±<span class="amount">{{ userMember.event.cashAmount }} {{ userMember.event.cashCurrency }}</span></span>-->
     
     <hr/>
   
   
   
-    <h3>W losowaniu biorą udział:</h3>
+    <h3>Na świętach będą:</h3>
     <div *ngIf="userMember.event.members && userMember.event.members.length > 0" class="members">
         
       

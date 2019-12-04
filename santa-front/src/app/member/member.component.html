@@ -18,7 +18,8 @@
   <div *ngIf="!pairedMember && authorized && !tutorialClosed" class="alert alert-success">
     <p>Witaj, {{ userMember.username }}</p>
     <ol>
-      <li>Uzupełnij prezenty. Wpisz przynajmniej 3 pomysły, żeby św. Mikołaj miał w czym wybierać, a dla Ciebie będzie to wciąż niespodzianka! :)
+      <li>Uzupełnij prezenty. Wpisz 2-3 pomysły, żeby św. Mikołaj miał w czym wybierać, a dla Ciebie będzie to niespodzianka! :)
+      <li>W tym roku św. Mikołaj prosi, żeby <u>nie wpisywać</u> kart podarunkowych, ani <u>nie podawać mu linków do stron</u>, bo to by było dla Niego zbyt proste :)
       <li>Napisz do Mikołaja krótki list i powiedz mu jak się sprawowałeś/aś w minionym roku.
     </ol>
     <button (click)="closeTutorial()" class="btn btn-success">Rozumiem!</button>
@@ -52,7 +53,7 @@
     <form *ngIf="authorized" [formGroup]="giftForm" (ngSubmit)="onSubmitGift()">
       <div *ngIf="showGiftEdit">
         <h4>Nowy prezent</h4>
-        <p>Dodaj prezent w granicach <span class="amount">{{ userMember.event.cashAmount }} {{ userMember.event.cashCurrency }}</span></p>
+        <p>Dodaj prezent</p>
         <div class="form-group">
           <label for="name">Nazwa:</label>
           <input formControlName="name" 
@@ -97,7 +98,7 @@
     <h4>List do św. Mikołaja</h4>
     <p *ngIf="authorized && !showLetterEdit && userMember.letter" class="letter">{{ userMember.letter }}</p>
     <p *ngIf="!authorized" class="letter">{{ userMember.letter ? (userMember.letter.substr(0, 5) + '...') : '– – –' }}</p>
-    <p *ngIf="authorized && !userMember.letter && !showLetterEdit">Napisz ogólnopoglądowy list do św. Mikołaja. Opisz swoje wszystkie dobre i złe uczynki (nie wolno kłamać).</p>
+    <p *ngIf="authorized && !userMember.letter && !showLetterEdit">Opisz swoje dobre i złe uczynki (nie wolno kłamać).</p>
     
     <form *ngIf="authorized" [formGroup]="letterForm" (ngSubmit)="onSubmitLetter()">
       <div *ngIf="showLetterEdit" class="form-group">
@@ -109,7 +110,7 @@
           </textarea>
         <div *ngIf="submitted && fl['letter'].errors" class="invalid-feedback">
             <div *ngIf="fl['letter'].errors.minlength || fl['letter'].errors.required">List za krótki. Św. Mikołaj lubi długie listy</div>
-            <div *ngIf="fl['letter'].errors.maxlength">List zbyt długi... Św. Mikołaj lubi długi listy, ale musi zająć się tysiącami takich dzieci jak Ty...</div>
+            <div *ngIf="fl['letter'].errors.maxlength">List zbyt długi... Św. Mikołaj lubi długie listy, ale musi zająć się tysiącami takich dzieci jak Ty...</div>
         </div>
       </div>
       <div class="form-group">

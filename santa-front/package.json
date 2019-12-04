@@ -5,9 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "start_loc": "ng serve --host 192.168.0.177 --port 3334 -o",
-    "start_77_debug": "ng serve --host 77.55.215.127 --public-host http://cotpm.nazwa.pl --port 4200 --disable-host-check",
+    "start_77_debug": "ng serve --host 77.55.215.127 --public-host http://cotpm.nazwa.pl --port 80 --disable-host-check",
     "build": "ng build --prod",
-    "test-prod": "./node_modules/http-server/bin/http-server ./dist/app-ng",
+    "test-prod": "./node_modules/http-server/bin/http-server ./dist/app-ng -p 80",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

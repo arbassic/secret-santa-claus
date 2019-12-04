@@ -88,7 +88,7 @@ export class MemberComponent implements OnInit {
   private initForms() {
 
     this.letterForm = this.formBuilder.group({
-      letter: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(300)]]
+      letter: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(1500)]]
     });
 
 
