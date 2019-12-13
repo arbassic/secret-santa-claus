@@ -23,6 +23,6 @@
   },
   "homepage": "https://gitlab.com/Malczewski/secret-santa-claus#README",
   "devDependencies": {
-    "express-generator": "^4.16.0"
+    "express-generator": "^4.16.1"
   }
 }
