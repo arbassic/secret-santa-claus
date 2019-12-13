@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiEndpoint: 'http://cotpm.nazwa.pl:3330'
+  apiEndpoint: 'http://localhost:3330'
 };
 
 /*

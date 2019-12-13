@@ -16,8 +16,8 @@ import { Observable } from 'rxjs';
 
 export class MemberComponent implements OnInit {
 
-  @ViewChild('letter') letterHtmlElement: ElementRef;
-  @ViewChild('giftName') giftHtmlElement: ElementRef;
+  @ViewChild('letter', { static: false }) letterHtmlElement: ElementRef;
+  @ViewChild('giftName', { static: false }) giftHtmlElement: ElementRef;
 
   userMember: UserMember;
   pairedMember: UserMember;
