@@ -15,7 +15,8 @@ async function authenticate({ username, password }) {
     
   }
 
-  const user = await User.findOne({ username })
+  const user = await User
+    .findOne({ username })
     .populate('events');
 
   if (user && bcrypt.compareSync(password, user.hash)) {
@@ -92,15 +93,16 @@ async function update(id, userParam) {
 
   }
 
+  // copy userParam properties to user
+  Object.assign(user, userParam);
+
   // hash password if it was entered
   if (userParam.password) {
 
-    userParam.hash = bcrypt.hashSync(userParam.password, SALT_LENGTH);
+    user.hash = bcrypt.hashSync(userParam.password, SALT_LENGTH);
 
   }
 
-  // copy userParam properties to user
-  Object.assign(user, userParam);
 
   await user.save();
 
