@@ -19,7 +19,9 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('debug', true);
 
 const mongoPromise =
-  mongoose.connect(process.env.DB_AUTH_URL);
+  mongoose.connect(process.env.DB_AUTH_URL, {
+    useUnifiedTopology: true
+  });
 
 mongoPromise.then(() => {
   
@@ -54,7 +56,7 @@ try {
 
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 

@@ -1,25 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const router = new express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+router.get('/', (req, res, next) => {
 
-/* GET Helloworld page. */
-router.get('/helloworld', function(req, res, next) {
-  res.render('helloworld', { title: 'Siemaneczko' });
-});
+  res.render('index', { title: 'SSClaus' });
 
-/* GET Userlist page. */
-router.get('/userlist', function(req, res) {
-  const db = req.db;
-  const collection = db.get('usercollection');
-  collection.find({}, {}, (e, docs) => {
-    res.render('userlist', {
-      "userlist": docs
-    });
-  });
 });
 
 module.exports = router;
