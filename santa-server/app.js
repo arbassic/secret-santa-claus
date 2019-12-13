@@ -37,6 +37,19 @@ mongoose.Promise = global.Promise;
 
 const app = express();
 
+const port = process.env.PORT;
+
+console.log(`Listening at port ${port}`);
+try {
+
+  app.listen(port);
+
+} catch (exception) { 
+  
+  console.log(exception);
+
+}
+
 // View engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -72,7 +85,7 @@ app.use('/events', require('./events/events.controller'));
 
 // Todo: app.use('/favicon.ico', usersRouter);
 
-
 app.use(errorHandler);
+
 
 module.exports = app;
