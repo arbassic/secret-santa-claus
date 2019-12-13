@@ -1,4 +1,6 @@
 # Secret Santa Claus
-## Tajemniczy św. Mikołaj
 
-Dla Rodziny
+Angular + Express + MongoDB CRUD-like project to handle & improve holiday gifting-time process
+
+Angular client
+Server app utilizing MongoDB
