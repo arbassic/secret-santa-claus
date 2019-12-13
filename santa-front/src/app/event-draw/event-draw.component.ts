@@ -21,7 +21,7 @@ export class EventDrawComponent implements OnInit {
   event: Event;
   currentUserSubscription: Subscription;
   loading: Boolean = false;
-  
+
   constructor(
     private titleService: Title,
     private eventsService: EventsService,
@@ -39,75 +39,80 @@ export class EventDrawComponent implements OnInit {
   ngOnInit() {
     this.titleService.setTitle('Secret Santa – Event draw');
     this.route.params.subscribe(params => {
-      
+
       // get event data for event with id from the URL parameter
-      this.eventsService.getById(params['id']).pipe(first()).subscribe(eventData => {
-        this.event = Object.assign(new Event(), eventData);
-        this.event.members = this.event.members.map(memberData => Object.assign(new UserMember(), memberData));
-        let tempMembers = this.event.members.slice();
-        shuffle(tempMembers);
-        tempMembers.forEach((member, index) => {
-          member['tempId'] = index;
-        });
-
-        let drawnMembers: UserMember[] = this.event.members.slice();
-        
-        let testOk = true, attempts = 0;
-        do {
-          shuffle(drawnMembers);
-          testOk = true;
-          tempMembers.some((member, index) => {
-            if (member == drawnMembers[index]) {
-              testOk = false;
-              return true;
-            }
-          });
-        } while (!testOk && attempts < 500);
-
-        if (testOk) {
+      this.eventsService
+        .getById(params['id'])
+        .pipe(first())
+        .subscribe(eventData => {
+          this.event = Object.assign(new Event(), eventData);
+          this.event.members = this.event.members.map(memberData => Object.assign(new UserMember(), memberData));
+          const tempMembers = this.event.members.slice();
+          shuffle(tempMembers);
           tempMembers.forEach((member, index) => {
-            member['drawnMember'] = drawnMembers[index];
+            member['tempId'] = index;
           });
 
-          this.event.members.sort((a, b) => a['tempId'] - b['tempId']);
+          const drawnMembers: UserMember[] = this.event.members.slice();
 
-          this.alertService.success('Drawing succeed');
-        } else {
-          this.alertService.error('Drawing failed');
-        }
-      }, error => {
-        this.alertService.error("No such event", error)
+          let testOk = true, attempts = 0;
+          do {
+            shuffle(drawnMembers);
+            testOk = true;
+            tempMembers.some((member, index) => {
+              if (member == drawnMembers[index]) {
+                testOk = false;
+                return true;
+              }
+            });
+          } while (!testOk && attempts++ < 500);
+
+          if (testOk) {
+            tempMembers.forEach((member, index) => {
+              member['drawnMember'] = drawnMembers[index];
+            });
+
+            this.event.members.sort((a, b) => a['tempId'] - b['tempId']);
+
+            this.alertService.success('Drawing succeed');
+          } else {
+            this.alertService.error('Drawing failed');
+          }
+        }, error => {
+          this.alertService.error('No such event', error);
         });
-      
+
     });
   }
 
   saveResults() {
-    if (this.loading) return;
+    if (this.loading) {
+      return;
+    }
+
     const results = this.event.members.map(
       member => {
         return {
           memberId: member.id,
           drawnMemberId: member['drawnMember'].id
-        }
+        };
       }
     );
-    
+
     this.loading = true;
 
-    this.eventsService.saveResults(this.event.id, results).pipe(first()).subscribe(
-      responseData => {
-        this.alertService.success('Result saved successfully');
-        this.loading = false;
-      },
-      error => {
-        this.alertService.error(error);
-        this.loading = false;
-      }
-    );
-    
+    this.eventsService
+      .saveResults(this.event.id, results)
+      .pipe(first())
+      .subscribe(
+        responseData => {
+          this.alertService.success('Result saved successfully');
+          this.loading = false;
+        },
+        error => {
+          this.alertService.error(error);
+          this.loading = false;
+        }
+      );
   }
-
-
-
 }

@@ -14,7 +14,7 @@ export class MemberEventComponent implements OnInit {
 
   userMember: UserMember;
   parentMemberId: string;
-  
+
   constructor(
     private userService: UserService,
     private eventsService: EventsService,
@@ -27,8 +27,8 @@ export class MemberEventComponent implements OnInit {
 
     this.userService.getMemberById(redirectionMemberId).pipe(first()).subscribe(data => {
       this.userMember = Object.assign(new UserMember(), data);
-      
-    }, 
+
+    },
     error => {
       this.alertService.error(error);
     });

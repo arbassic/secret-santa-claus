@@ -9,7 +9,7 @@ import { AuthenticationService } from './_services';
   styleUrls: ['./app.component.styl']
 })
 export class AppComponent {
-  
+
   currentUser: User;
 
   title = 'Secret Santa Claus';

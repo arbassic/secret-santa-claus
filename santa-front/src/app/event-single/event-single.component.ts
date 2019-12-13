@@ -20,7 +20,7 @@ export class SingleEventComponent implements OnInit {
   currentUser: User;
   event: Event;
   currentUserSubscription: Subscription;
-  
+
   constructor(
     private eventsService: EventsService,
     private authenticationService: AuthenticationService,
@@ -31,21 +31,26 @@ export class SingleEventComponent implements OnInit {
     this.currentUserSubscription = this.authenticationService.currentUser.subscribe(user => {
       this.currentUser = user;
     });
-    
+
     this.baseURL = window.location.href.replace(this.location.path(), '');
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      
+
       // get event data for event with id from the URL parameter
-      this.eventsService.getById(params['id']).pipe(first()).subscribe(eventData => {
-        this.event = Object.assign(new Event(), eventData);
-        this.event.members = this.event.members.map(memberData => Object.assign(new UserMember(), memberData));
-      }, error => {
-        this.alertService.error("No such event", error)
+      this.eventsService
+        .getById(params['id'])
+        .pipe(first())
+        .subscribe(eventData => {
+          this.event = Object.assign(new Event(), eventData);
+          this.event.members =
+            this.event.members
+            .map(memberData => Object.assign(new UserMember(), memberData));
+        }, error => {
+          this.alertService.error('No such event', error);
         });
-      
+
     });
   }
 

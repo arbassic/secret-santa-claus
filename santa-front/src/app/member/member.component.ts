@@ -13,11 +13,12 @@ import { Observable } from 'rxjs';
   templateUrl: './member.component.html',
   styleUrls: ['./member.component.styl']
 })
+
 export class MemberComponent implements OnInit {
 
   @ViewChild('letter') letterHtmlElement: ElementRef;
   @ViewChild('giftName') giftHtmlElement: ElementRef;
-  
+
   userMember: UserMember;
   pairedMember: UserMember;
   letterForm: FormGroup;
@@ -29,7 +30,7 @@ export class MemberComponent implements OnInit {
   showLetterEdit = false;
   showGiftEdit = false;
   giftEdited: Gift;
-  
+
   loading = false;
   submitted = false;
 
@@ -51,37 +52,39 @@ export class MemberComponent implements OnInit {
     let memberToken: string = this.route.snapshot.paramMap.get('token');
     if (!memberToken &&
       localStorage.getItem('memberToken') &&
-      memberId == localStorage.getItem('memberId'))
-    {
+      memberId == localStorage.getItem('memberId')) {
+
       memberToken = localStorage.getItem('memberToken');
       memberToken = memberToken.length < 6 ? null : memberToken;
+
     }
 
-    let membersRequest = memberToken ?
+    const membersRequest = memberToken ?
       this.userService.authMemberById(memberId, memberToken) :
       this.userService.getMemberById(memberId);
-    
+
     membersRequest.pipe(first()).subscribe(
       data => {
 
         this.authorized = memberToken != null;
         this.registered = this.authenticationService.currentUserValue && this.authenticationService.currentUserValue.token ? true : false;
-        
+
         if (this.authorized) {
           localStorage.setItem('memberToken', memberToken);
           localStorage.setItem('memberId', memberId);
         }
-        
+
         this.userMember = Object.assign(new UserMember(), data);
         this.pairedMember = this.userMember.pairedMemberId ? Object.assign(new UserMember(), this.userMember.pairedMemberId) : null;
         this.initForms();
         this.letterForm.controls.letter.setValue(this.userMember.letter ? this.userMember.letter : '');
-      }, 
+      },
       error => {
-        if(memberToken)
+        if (memberToken) {
           this.alertService.error('Not authorized');
-        else
+        } else {
           this.alertService.error(error);
+        }
       });
   }
 
@@ -103,7 +106,7 @@ export class MemberComponent implements OnInit {
   get fg() { return this.giftForm.controls; }
 
   onSubmitLetter() {
-    if (this.showGiftEdit) this.showGiftEdit = false;
+    this.showGiftEdit = false;
 
     if (!this.showLetterEdit) {
       this.showLetterEdit = true;
@@ -158,14 +161,14 @@ export class MemberComponent implements OnInit {
   // --------- GIFT ---------------
   onSubmitGift() {
 
-    if (this.showLetterEdit) this.showLetterEdit = false;
+    this.showLetterEdit = false;
 
-    if(!this.showGiftEdit) {
+    if (!this.showGiftEdit) {
       this.showGiftEdit = true;
       setTimeout(() => this.giftHtmlElement.nativeElement.focus(), 200);
       return;
     }
-    
+
 
     // validate & save
     // create new event
@@ -199,20 +202,22 @@ export class MemberComponent implements OnInit {
           if (this.giftEdited) {
             // it was the gift edit call - just cancel
             this.onCancel();
-            return; 
+            return;
           }
 
-          if (!this.userMember.gifts) this.userMember.gifts = new Array<Gift>();
-          
+          if (!this.userMember.gifts) {
+            this.userMember.gifts = new Array<Gift>();
+          }
+
           if (data && data['gifts'] && data['gifts'].length > this.userMember.gifts.length) {
             let newGiftId;
             newGiftId = data['gifts'].pop().id;
 
             const gift: Gift = Object.assign(new Gift(), this.giftForm.value);
             gift.id = newGiftId;
-  
+
             this.userMember.gifts.push(gift);
-            
+
             this.onCancel();
           } else {
             // reload
@@ -227,8 +232,8 @@ export class MemberComponent implements OnInit {
   }
 
   editGift(giftIndex) {
-    if (this.showLetterEdit) this.showLetterEdit = false;
-    
+    this.showLetterEdit = false;
+
     this.giftEdited = this.userMember.gifts[giftIndex];
 
     this.fg.description.setValue(this.giftEdited.description);

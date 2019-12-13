@@ -23,38 +23,40 @@ export class MemberPairedComponent implements OnInit {
 
   ngOnInit() {
 
-    const memberId: string = this.route.snapshot.paramMap.get('id');
-    let memberToken: string = this.route.snapshot.paramMap.get('token');
+    const memberId = this.route.snapshot.paramMap.get('id');
+    let memberToken = this.route.snapshot.paramMap.get('token');
     if (!memberToken &&
       localStorage.getItem('memberToken') &&
-      memberId == localStorage.getItem('memberId'))
-    {
+      memberId == localStorage.getItem('memberId')) {
+
       memberToken = localStorage.getItem('memberToken');
       memberToken = memberToken.length < 6 ? null : memberToken;
+
     }
 
-    let membersRequest = memberToken ?
+    const membersRequest = memberToken ?
       this.userService.authMemberById(memberId, memberToken) :
       this.userService.getMemberById(memberId);
-    
+
     membersRequest.pipe(first()).subscribe(
       data => {
 
         this.authorized = memberToken != null;
-        
+
         if (this.authorized) {
           localStorage.setItem('memberToken', memberToken);
           localStorage.setItem('memberId', memberId);
         }
-        
+
         this.userMember = Object.assign(new UserMember(), data);
         this.pairedMember = this.userMember.pairedMemberId ? Object.assign(new UserMember(), this.userMember.pairedMemberId) : null;
-      }, 
+      },
       error => {
-        if(memberToken)
+        if (memberToken) {
           this.alertService.error('Not authorized');
-        else
+        } else {
           this.alertService.error(error);
+        }
       });
   }
 

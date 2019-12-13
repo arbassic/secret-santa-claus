@@ -13,10 +13,10 @@ import { EventsService } from '@/_services/events.service';
   styleUrls: ['./event-new-member.component.styl']
 })
 export class EventNewMemberComponent implements OnInit {
-  
+
   // event to add the new member to
   event: Event;
-  
+
   registerForm: FormGroup;
   loading = false;
   submitted = false;
@@ -37,16 +37,19 @@ export class EventNewMemberComponent implements OnInit {
       username: ['', [Validators.required, Validators.minLength(3)]]
     });
 
-    
+
     this.route.params.subscribe(params => {
-      
+
       // get event data for event with id from the URL parameter
-      this.eventsService.getById(params['id']).pipe(first()).subscribe(eventData => {
-        this.event = Object.assign(new Event(), eventData);
-      }, error => {
-        this.alertService.error("No such event", error)
+      this.eventsService
+        .getById(params['id'])
+        .pipe(first())
+        .subscribe(eventData => {
+          this.event = Object.assign(new Event(), eventData);
+        }, error => {
+          this.alertService.error('No such event', error);
         });
-      
+
     });
   }
 
@@ -68,7 +71,7 @@ export class EventNewMemberComponent implements OnInit {
       .subscribe(
         data => {
           console.log('New member registration complete. Data', data);
-          
+
           // add him to the event
           this.addUserToEvent(data);
         },
@@ -82,11 +85,11 @@ export class EventNewMemberComponent implements OnInit {
     this.eventsService.addUserToEvent(this.event.id, data._id)
       .pipe(first())
       .subscribe(
-        data => {
-          console.log('New member added to the event. Data', data);
-          
+        memberData => {
+          console.log('New member added to the event. Data', memberData);
+
           this.loading = false;
-          
+
           this.alertService.success('New member created successfully', true);
           this.router.navigate([`/events/${this.event.id}`]);
         },

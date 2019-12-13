@@ -36,7 +36,9 @@ export class EventsComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.listMode) return;
+    if (this.listMode) {
+      return;
+    }
 
     this.registerForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(4)]]
@@ -45,7 +47,7 @@ export class EventsComponent implements OnInit {
 
   // convenience getter for easy access to form fields
   get f() { return this.registerForm.controls; }
-  
+
   onSubmitCreate() {
     // create new event
     this.submitted = true;
