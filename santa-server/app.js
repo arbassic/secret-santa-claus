@@ -39,6 +39,8 @@ const app = express();
 
 const port = process.env.PORT;
 
+app.set('port', process.env.PORT);
+
 console.log(`Listening at port ${port}`);
 try {
 
