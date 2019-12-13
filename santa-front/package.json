@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "start_loc": "ng serve --host 192.168.0.177 --port 3334 -o",
-    "start_77_debug": "ng serve --host 77.55.215.127 --public-host http://localhost --port 80 --disable-host-check",
+    "start_77_debug": "ng serve --host X.X.X.X --public-host http://localhost --port 80 --disable-host-check",
     "build": "ng build --prod",
     "test-prod": "./node_modules/http-server/bin/http-server ./dist/app-ng -p 80",
     "test": "ng test",
